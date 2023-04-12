@@ -8,7 +8,8 @@ void encode(char *message){
     int len = strlen (message);
 
     for(int i=0 ;i<len ;i++){
-        message[i]=message[i]+3;// + 3 to assci table    }
+        if(isalpha(message[i]))
+            message[i]=message[i]+3;// + 3 to assci table    }
     }
 }
 void decode(char *message){
@@ -16,6 +17,7 @@ void decode(char *message){
     int len = strlen (message);
 
     for(int i=0 ;i<len ;i++){
-        message[i]=message[i]-3;// -3 3 to assci table    }
+        if(isalpha(message[i]))
+            message[i]=message[i]-3;// -3 3 to assci table    }
     }
 }

@@ -183,6 +183,10 @@ int main() {
             }
             
         }
+        else if(!strcmp(comm0,"encode"))
+        {
+            
+        }
 
 
 		//printf("%d\n",res_cmp);
