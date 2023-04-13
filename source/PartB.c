@@ -3,8 +3,7 @@
 #include<string.h>
 #include<ctype.h>
 
-
-void encode(char *message){
+void codecA(char *message){
 
     int len =strlen(message);
     for(int i = 0; i < len ; i++){
@@ -15,6 +14,12 @@ void encode(char *message){
 
     }
 }
-void decode(char *message){
-    encode(message);
+void codecB(char *message){
+
+    int len = strlen (message);
+
+    for(int i=0 ;i<len ;i++){
+        if(isalpha(message[i]))
+            message[i]=message[i]+3;// + 3 to assci table    }
+    }
 }

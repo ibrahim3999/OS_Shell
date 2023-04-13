@@ -7,6 +7,7 @@
 #include "unistd.h"
 #include <string.h>
 #include <ctype.h>
+#include "source/PartB.h"
 
 int cmp_files(const char *file1, const char *file2, const char *flag) {
     FILE *fp1, *fp2;
@@ -91,7 +92,7 @@ int copy_file(const char* source_file, const char* dest_file, int force_flag, in
     }
 
     while ((bytes_read = fread(buffer, 1, sizeof(buffer), source_fp)) > 0) {
-        if (fwrite(buffer, 1, bytes_read, dest_fp) != bytes_read) {
+        if (fwrite(buffer, 1, bytes_read, dest_fp) != (size_t) bytes_read) {
             fprintf(stderr, "Error writing to destination file '%s': %s\n", dest_file, strerror(errno));
             success = 1;
             break;
@@ -185,7 +186,7 @@ int main() {
         }
         else if(!strcmp(comm0,"encode"))
         {
-            
+
         }
 
 
