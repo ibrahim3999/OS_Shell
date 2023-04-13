@@ -1,15 +1,26 @@
 #include "codecB.h"
+#include<stdlib.h> 
+#include<stdio.h>
+#include<string.h>
+#include<ctype.h>
 
-void encode_codecB(char* str) {
-    while (*str != '\0') {
-        *str = (*str + 3) % 128;//+3 in assci table
-        str++;
+char* encode_codecB(char* message) {
+    int len = strlen (message);
+
+    for(int i=0 ;i<len ;i++){
+        message[i]=message[i]+3;// + 3 to assci table    }
     }
+    return message; 
+    
 }
 
-void decode_codecB(char* str) {
-    while (*str != '\0') {
-        *str = (*str - 3 + 128) % 128;//-3 in assci table
-        str++;
+char* decode_codecB(char* message) {
+
+int len = strlen (message);
+
+    for(int i=0 ;i<len ;i++){
+        message[i]=message[i]-3;// -3 3 to assci table    }
     }
+return message;
 }
+

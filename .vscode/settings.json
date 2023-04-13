@@ -3,6 +3,7 @@
     "files.associations": {
         "codeca.h": "c",
         "codecb.h": "c",
-        "partb.h": "c"
+        "partb.h": "c",
+        "system_error": "c"
     }
 }

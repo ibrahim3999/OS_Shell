@@ -133,7 +133,7 @@ int main() {
     char *comm0;
 	char *comm1;
 	char *comm2;
-	char *flag;
+	char *comm3;
 
 
 	while (1) {
@@ -163,32 +163,49 @@ int main() {
                 comm2=token;
             }
             if(i==2){
-                flag=token;
+                comm3=token;
             }
             i++;
 	    }
        
         if(!strcmp(comm0,"cmp")){
-            if(flag!=NULL){
-                cmp_files(comm1,comm2,flag);
+            if(comm3!=NULL){
+                cmp_files(comm1,comm2,comm3);
             }
             else{
                 cmp_files(comm1,comm2,"");
             }
         }
 		else if(!strcmp(comm0,"copy")){
-            if(!strcmp(flag,"-v")){
+            if(!strcmp(comm3,"-v")){
                 copy_file(comm1,comm2,0,1);
             }
-            if(!strcmp(flag,"-f")){
+            if(!strcmp(comm3,"-f")){
                 copy_file(comm1,comm2,1,1);
             }
             
         }
-        else if(!strcmp(comm0,"encode"))
+        else if(!strcmp(comm0,"encode") && !strcmp(comm1,"codecA") )
         {
-
+            char *res=encode_codecA(comm2);
+            printf("%s\n",res);
         }
+        else if(!strcmp(comm0,"encode") && !strcmp(comm1,"codecB") )
+        {
+            char *res=encode_codecB(comm2);
+            printf("%s\n",res);
+        }
+        else if(!strcmp(comm0,"decode") && !strcmp(comm1,"codecA") )
+        {
+            char *res=decode_codecA(comm2);
+            printf("%s\n",res);
+        }
+         else if(!strcmp(comm0,"decode") && !strcmp(comm1,"codecB") )
+        {
+            char *res=decode_codecB(comm2);
+            printf("%s\n",res);
+        }
+
 
 
 		//printf("%d\n",res_cmp);
