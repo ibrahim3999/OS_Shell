@@ -7,7 +7,8 @@
 #include "unistd.h"
 #include <string.h>
 #include <ctype.h>
-#include "source/PartB.h"
+#include "source/codecA.h"
+#include "source/codecB.h"
 
 int cmp_files(const char *file1, const char *file2, const char *flag) {
     FILE *fp1, *fp2;
