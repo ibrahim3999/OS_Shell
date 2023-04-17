@@ -130,10 +130,6 @@ int main() {
 	char *argv[10];
 	char command[1024];
 	char *token;
-    char *comm0;
-	char *comm1;
-	char *comm2;
-	char *comm3;
 
 
 	while (1) {
@@ -141,8 +137,6 @@ int main() {
 	    fgets(command, 1024, stdin);
 	    command[strlen(command) - 1] = '\0'; // replace \n with \0
 
-		//int res=cmp("Files/a.txt","Files/b.txt");
-		//printf("%d\n",res);
    
 	 /* parse command line */
 		
@@ -151,79 +145,93 @@ int main() {
 		
 	    while (token != NULL){
             argv[i] = token;
-            if(i==0){
-                comm0=token;
-            }
-            token = strtok (NULL," ");
-
-            if(i==0){
-                comm1=token;
-            }
-            if(i==1){
-                comm2=token;
-            }
-            if(i==2){
-                comm3=token;
-            }
             i++;
+            token = strtok(NULL, " ");//next
 	    }
-       
-        if(!strcmp(comm0,"cmp")){
-            if(comm3!=NULL){
-                cmp_files(comm1,comm2,comm3);
+ 
+        if(!strcmp(argv[0],"cmp")){
+            if(argv[3]!=NULL){
+                cmp_files(argv[1],argv[2],argv[3]);
             }
             else{
-                cmp_files(comm1,comm2,"");
+                cmp_files(argv[1],argv[2],"");
             }
         }
-		else if(!strcmp(comm0,"copy")){
-            if(!strcmp(comm3,"-v")){
-                copy_file(comm1,comm2,0,1);
+		else if(!strcmp(argv[0],"copy")){
+            if(!strcmp(argv[3],"-v")){
+                copy_file(argv[1],argv[2],0,1);
             }
-            if(!strcmp(comm3,"-f")){
-                copy_file(comm1,comm2,1,1);
+            if(!strcmp(argv[3],"-f")){
+                copy_file(argv[1],argv[2],1,1);
             }
             
         }
-        else if(!strcmp(comm0,"encode") && !strcmp(comm1,"codecA") )
+        else if(!strcmp(argv[0],"encode") && !strcmp(argv[1],"codecA") )
         {
-            char *res=encode_codecA(comm2);
+            char *res=encode_codecA(argv[2]);
             printf("%s\n",res);
         }
-        else if(!strcmp(comm0,"encode") && !strcmp(comm1,"codecB") )
+        else if(!strcmp(argv[0],"encode") && !strcmp(argv[1],"codecB") )
         {
-            char *res=encode_codecB(comm2);
+            char *res=encode_codecB(argv[2]);
             printf("%s\n",res);
         }
-        else if(!strcmp(comm0,"decode") && !strcmp(comm1,"codecA") )
+        else if(!strcmp(argv[0],"decode") && !strcmp(argv[1],"codecA") )
         {
-            char *res=decode_codecA(comm2);
+            char *res=decode_codecA(argv[2]);
             printf("%s\n",res);
         }
-         else if(!strcmp(comm0,"decode") && !strcmp(comm1,"codecB") )
+         else if(!strcmp(argv[0],"decode") && !strcmp(argv[1],"codecB") )
         {
-            char *res=decode_codecB(comm2);
+            char *res=decode_codecB(argv[2]);
             printf("%s\n",res);
+            
         }
+        else if(!strcmp(argv[0],"cd")){
+            if(argv[1]==NULL){
+                chdir(getenv("HOME"));
+            }else{
+                if(chdir(argv[1])!=0){
+                    perror("cd failed");
+                }
+            }
+            continue;
+        }
+        else if(!strcmp(argv[0],"help")){
+            // Print help message
+            printf("This is a simple shell implementation.\n");
+            printf("Supported commands: cd , cmp , copy , help.\n");
+        } 
 
-
-
-		//printf("%d\n",res_cmp);
 		
 
 	    argv[i] = NULL;
 	    /* Is command empty */ 
 		
 	    if (argv[0] == NULL)
-		continue;
+		    continue;
 	   	
 	    /* for commands not part of the shell command language */ 
-		/*
-	    if (fork() == 0) { 
-		execvp(argv[0], argv);
-		wait(NULL);
+		pid_t pid =fork();
+
+	    if (pid == 0) { 
+        //Child process
+            if(execvp(argv[0], argv)==-1){
+                perror("exec failed");
+                exit(EXIT_FAILURE);
+            }
+		
 	    }
-		*/    
+        else if(pid < 0){
+            // Fork falied
+            perror("Fork failed");
+            exit(EXIT_FAILURE);
+        }
+        else{
+            // Parent process
+            wait(NULL);
+        }
+		    
 	}
     
 }
