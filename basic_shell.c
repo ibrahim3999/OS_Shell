@@ -156,6 +156,7 @@ int main() {
             else{
                 cmp_files(argv[1],argv[2],"");
             }
+            continue;
         }
 		else if(!strcmp(argv[0],"copy")){
             if(!strcmp(argv[3],"-v")){
@@ -164,27 +165,32 @@ int main() {
             if(!strcmp(argv[3],"-f")){
                 copy_file(argv[1],argv[2],1,1);
             }
+            continue;
             
         }
         else if(!strcmp(argv[0],"encode") && !strcmp(argv[1],"codecA") )
         {
             char *res=encode_codecA(argv[2]);
             printf("%s\n",res);
+            continue;
         }
         else if(!strcmp(argv[0],"encode") && !strcmp(argv[1],"codecB") )
         {
             char *res=encode_codecB(argv[2]);
             printf("%s\n",res);
+            continue;
         }
         else if(!strcmp(argv[0],"decode") && !strcmp(argv[1],"codecA") )
         {
             char *res=decode_codecA(argv[2]);
             printf("%s\n",res);
+            continue;
         }
          else if(!strcmp(argv[0],"decode") && !strcmp(argv[1],"codecB") )
         {
             char *res=decode_codecB(argv[2]);
             printf("%s\n",res);
+            continue;
             
         }
         else if(!strcmp(argv[0],"cd")){
@@ -197,10 +203,11 @@ int main() {
             }
             continue;
         }
-        else if(!strcmp(argv[0],"help")){
+        else if(!strcmp(argv[0],"--help")){
             // Print help message
             printf("This is a simple shell implementation.\n");
-            printf("Supported commands: cd , cmp , copy , help.\n");
+            printf("Supported commands: cd ,ls, cmp , copy , help.\n");
+            continue;
         } 
 
 		
@@ -217,14 +224,14 @@ int main() {
 	    if (pid == 0) { 
         //Child process
             if(execvp(argv[0], argv)==-1){
-                perror("exec failed");
+                perror("exec failed1");
                 exit(EXIT_FAILURE);
             }
 		
 	    }
         else if(pid < 0){
             // Fork falied
-            perror("Fork failed");
+            perror("Fork failed2");
             exit(EXIT_FAILURE);
         }
         else{
