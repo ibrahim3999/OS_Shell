@@ -7,123 +7,11 @@
 #include "unistd.h"
 #include <string.h>
 #include <ctype.h>
+#include "source/cmp.h"
+#include "source/copy.h"
 #include "source/codecA.h"
 #include "source/codecB.h"
 
-int cmp_files(const char *file1, const char *file2, const char *flag) {
-    FILE *fp1, *fp2;
-    int byte1, byte2;
-    int line = 1, pos = 0;
-    int equal = 1;
-
-    fp1 = fopen(file1, "r");
-    fp2 = fopen(file2, "r");
-
-    if (fp1 == NULL) {
-        printf("Could not open %s\n", file1);
-        return 1;
-    }
-
-    if (fp2 == NULL) {
-        printf("Could not open %s\n", file2);
-        fclose(fp1);
-        return 1;
-    }
-
-    while ((byte1 = getc(fp1)) != EOF && (byte2 = getc(fp2)) != EOF) {
-        pos++;
-
-        if (byte1 == '\n' && byte2 == '\n') {
-            line++;
-            pos = 0;
-        }
-
-        if (!strcmp(flag,"-i")) {
-            byte1 = tolower(byte1);
-            byte2 = tolower(byte2);
-        }
-
-        if (byte1 != byte2) {
-            equal = 0;
-            break;
-        }
-    }
-    if (equal==1 && !strcmp(flag,"-v")) {
-        printf("equal\n");
-    } else if  (!strcmp(flag,"-v")){
-        printf("distinct\n");
-    }
-
-    fclose(fp1);
-    fclose(fp2);
-    return equal ? 0 : 1;
-}
-
-
-int copy_file(const char* source_file, const char* dest_file, int force_flag, int verbose_flag) {
-    FILE* source_fp;
-    FILE* dest_fp;
-    char buffer[1024];
-    int bytes_read;
-    int success = 0;
-
-    if (access(dest_file, F_OK) != -1 && verbose_flag) {
-      printf("target file exist\n");
-      return 0;
-   }
-
-    source_fp = fopen(source_file, "rb");
-    if (source_fp == NULL) {
-        fprintf(stderr, "Error opening source file '%s': %s\n", source_file, strerror(errno));
-        return -1;
-    }
-
-    dest_fp = fopen(dest_file, force_flag ? "wb" : "ab");
-    if (dest_fp == NULL) {
-        fprintf(stderr, "Error opening destination file '%s': %s\n", dest_file, strerror(errno));
-        fclose(source_fp);
-        return -1;
-    }
-
-    if (!force_flag && ftell(dest_fp) > 0) {
-        fprintf(stderr, "Target file '%s' already exists. Use -f flag to overwrite.\n", dest_file);
-        fclose(source_fp);
-        fclose(dest_fp);
-        return 1;
-    }
-
-    while ((bytes_read = fread(buffer, 1, sizeof(buffer), source_fp)) > 0) {
-        if (fwrite(buffer, 1, bytes_read, dest_fp) != (size_t) bytes_read) {
-            fprintf(stderr, "Error writing to destination file '%s': %s\n", dest_file, strerror(errno));
-            success = 1;
-            break;
-        }
-    }
-
-    if (ferror(source_fp)) {
-        fprintf(stderr, "Error reading from source file '%s': %s\n", source_file, strerror(errno));
-        success = 1;
-    }
-
-    if (fclose(source_fp) != 0) {
-        fprintf(stderr, "Error closing source file '%s': %s\n", source_file, strerror(errno));
-        success = 1;
-    }
-
-    if (fclose(dest_fp) != 0) {
-        fprintf(stderr, "Error closing destination file '%s': %s\n", dest_file, strerror(errno));
-        success = 1;
-    }
-
-    if (success == 0 && verbose_flag) {
-        printf("success\n");
-    }else if (success && verbose_flag)
-    {
-        printf("general failure\n");
-    }
-    
-    return success;
-}
 
 int main() {
 	int i;
@@ -209,8 +97,6 @@ int main() {
             printf("Supported commands: cd ,ls, cmp , copy , help.\n");
             continue;
         } 
-
-		
 
 	    argv[i] = NULL;
 	    /* Is command empty */ 
