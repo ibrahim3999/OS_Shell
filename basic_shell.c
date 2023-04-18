@@ -110,14 +110,14 @@ int main() {
 	    if (pid == 0) { 
         //Child process
             if(execvp(argv[0], argv)==-1){
-                perror("exec failed1");
+                perror("exec failed");
                 exit(EXIT_FAILURE);
             }
 		
 	    }
         else if(pid < 0){
             // Fork falied
-            perror("Fork failed2");
+            perror("Fork failed");
             exit(EXIT_FAILURE);
         }
         else{
