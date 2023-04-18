@@ -11,7 +11,15 @@
 #include "source/copy.h"
 #include "source/codecA.h"
 #include "source/codecB.h"
+#include <signal.h> //for signal handling
+#include <sys/wait.h>
 
+
+//signal handler function for SIGINT
+void handle_signal(int sig) {
+    printf("\nCtrl+C detected, quitting the shell.\n");
+    exit(EXIT_SUCCESS);
+}
 
 int main() {
 	int i;
@@ -19,12 +27,13 @@ int main() {
 	char command[1024];
 	char *token;
 
+    signal(SIGINT,handle_signal);// register SIGINT singl hanlder
 
 	while (1) {
 	    printf("hello: ");
 	    fgets(command, 1024, stdin);
 	    command[strlen(command) - 1] = '\0'; // replace \n with \0
-
+      
    
 	 /* parse command line */
 		
@@ -94,7 +103,7 @@ int main() {
         else if(!strcmp(argv[0],"--help")){
             // Print help message
             printf("This is a simple shell implementation.\n");
-            printf("Supported commands: cd ,ls, cmp , copy , help.\n");
+            printf("Supported commands: cd ,ls, cmp , copy , help , pwd \n");
             continue;
         } 
 
@@ -105,9 +114,9 @@ int main() {
 		    continue;
 	   	
 	    /* for commands not part of the shell command language */ 
-		pid_t pid =fork();
+		pid_t child_pid =fork();
 
-	    if (pid == 0) { 
+	    if (child_pid == 0) { 
         //Child process
             if(execvp(argv[0], argv)==-1){
                 perror("exec failed");
@@ -115,7 +124,7 @@ int main() {
             }
 		
 	    }
-        else if(pid < 0){
+        else if(child_pid < 0){
             // Fork falied
             perror("Fork failed");
             exit(EXIT_FAILURE);
@@ -123,8 +132,9 @@ int main() {
         else{
             // Parent process
             wait(NULL);
+
         }
 		    
 	}
-    
+   
 }
