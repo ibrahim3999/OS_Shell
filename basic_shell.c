@@ -22,14 +22,20 @@ void handle_signal(int sig) {
 }
 
 int main() {
-	int i;
 	char *argv[10];
 	char command[1024];
 	char *token;
+    char *saveptr;
+    int argCount = 0;
+    char *output = NULL;
+    int append = 0;
 
     signal(SIGINT,handle_signal);// register SIGINT singl hanlder
 
 	while (1) {
+        argCount = 0;
+        output = NULL;
+        append = 0;
 	    printf("hello: ");
 	    fgets(command, 1024, stdin);
 	    command[strlen(command) - 1] = '\0'; // replace \n with \0
@@ -37,15 +43,29 @@ int main() {
    
 	 /* parse command line */
 		
-	    i = 0;
-	    token = strtok (command," ");//split when space
+	    token = strtok_r(command," ",&saveptr);//split when space
 		
-	    while (token != NULL){
-            argv[i] = token;
-            i++;
-            token = strtok(NULL, " ");//next
-	    }
- 
+	 while (token != NULL) {
+
+        if (strcmp(token, ">>") == 0) {
+            token = strtok_r(NULL, " ", &saveptr);
+            if (token != NULL) {
+                output = token;
+                append = 1;
+            }
+        } else if (strcmp(token, ">") == 0) {
+            token = strtok_r(NULL, " ", &saveptr);
+            if (token != NULL) {
+                output = token;
+                append = 0;
+            }
+        } else {
+            argv[argCount++] = token;
+        }
+        token = strtok_r(NULL, " ", &saveptr);
+     }
+        argv[argCount]=NULL;
+
         if(!strcmp(argv[0],"cmp")){
             if(argv[3]!=NULL){
                 cmp_files(argv[1],argv[2],argv[3]);
@@ -54,6 +74,9 @@ int main() {
                 cmp_files(argv[1],argv[2],"");
             }
             continue;
+        }
+        else if (strcmp(argv[0], "exit") == 0) {
+            exit(0);
         }
 		else if(!strcmp(argv[0],"copy")){
             if(!strcmp(argv[3],"-v")){
@@ -106,33 +129,37 @@ int main() {
             printf("Supported commands: cd ,ls, cmp , copy , help , pwd \n");
             continue;
         } 
-
-	    argv[i] = NULL;
-	    /* Is command empty */ 
-		
-	    if (argv[0] == NULL)
-		    continue;
-	   	
+      
 	    /* for commands not part of the shell command language */ 
-		pid_t child_pid =fork();
+		pid_t pid = fork();
 
-	    if (child_pid == 0) { 
-        //Child process
-            if(execvp(argv[0], argv)==-1){
-                perror("exec failed");
-                exit(EXIT_FAILURE);
+        if (pid == 0) { 
+            // Child process
+
+            if (output != NULL) {
+                int flags = O_CREAT | O_WRONLY;
+                if (append) {
+                    flags |= O_APPEND;
+                } else {
+                    flags |= O_TRUNC;
+                }
+                int fd = open(output, flags, 0644);
+                dup2(fd, STDOUT_FILENO);
+                close(fd);
             }
-		
-	    }
-        else if(child_pid < 0){
-            // Fork falied
+            execvp(argv[0], argv);
+            perror("exec failed");
+            exit(EXIT_FAILURE);
+        }
+        else if (pid < 0) {
+            // Fork failed
             perror("Fork failed");
             exit(EXIT_FAILURE);
         }
-        else{
+        else {
             // Parent process
             wait(NULL);
-
+            // Cleanup
         }
 		    
 	}

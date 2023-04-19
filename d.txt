@@ -1,1 +1,15 @@
-aax
+>
+a
+a.txt
+basic_script.sh
+basic_shell.c
+bin
+b.txt
+d.txt
+makefile
+objects
+README.md
+source
+s.txt
+task2_v1.1.pdf
+test.c
