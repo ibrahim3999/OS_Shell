@@ -13,7 +13,7 @@ The available commands are:
 
 `cd [directory]`: Change the current working directory. If directory is not provided, change to the home directory.
 
-`--hel`p: Display this help message.
+`--help`: Display this help message.
 
 In addition, this shell also allows for basic input/output redirection and piping. To redirect output to a file, use `>` followed by the filename. To append output to a file, use `>>` followed by the filename. To pipe the output of one command into another command, use `|` followed by the next command.
 
