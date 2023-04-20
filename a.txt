@@ -1,0 +1,11 @@
+a
+a.c
+a.txt
+basic_script.sh
+basic_shell.c
+bin
+makefile
+objects
+README.md
+source
+task2_v1.1.pdf
