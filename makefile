@@ -1,14 +1,14 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -pedantic
 
-all: basic_shell 
+all: stshell 
 
-basic_shell: objects/basic_shell.o objects/codecA.o objects/codecB.o objects/copy.o objects/cmp.o
-	$(CC) -o bin/basic_shell objects/basic_shell.o objects/codecA.o objects/codecB.o objects/copy.o objects/cmp.o
-	./bin/basic_shell   # execute the basic_shell command here
+stshell: objects/stshell.o objects/codecA.o objects/codecB.o objects/copy.o objects/cmp.o
+	$(CC) -o bin/stshell objects/stshell.o objects/codecA.o objects/codecB.o objects/copy.o objects/cmp.o
+	./bin/stshell   # execute the stshell command here
 
-objects/basic_shell.o: basic_shell.c 
-	$(CC) $(CFLAGS) -c basic_shell.c -o objects/basic_shell.o
+objects/stshell.o: stshell.c 
+	$(CC) $(CFLAGS) -c stshell.c -o objects/stshell.o
 
 objects/codecA.o: source/codecA.c source/codecA.h
 	$(CC) $(CFLAGS) -c source/codecA.c -o objects/codecA.o
@@ -23,4 +23,4 @@ objects/copy.o: source/copy.c source/copy.h
 	$(CC) $(CFLAGS) -c source/copy.c -o objects/copy.o
 
 clean:
-	rm -f bin/basic_shell bin/codecA bin/codecB  bin/copy  bin/cmp *.o
+	rm -f bin/stshell bin/codecA bin/codecB  bin/copy  bin/cmp *.o

@@ -19,7 +19,8 @@
 //signal handler function for SIGINT
 void handle_signal() {
     printf("\nCtrl+C detected, quitting the shell.\n");
-    exit(EXIT_SUCCESS);
+    //exit(EXIT_SUCCESS);
+    
 }
 int execute_command(char *argv[], int input_fd, int output_fd) {
     pid_t pid = fork();
@@ -62,6 +63,7 @@ int main() {
     int append = 0;
     int input_fd = STDIN_FILENO;
     int output_fd = STDOUT_FILENO;
+    int argsCopy=0;
 
     signal(SIGINT,handle_signal);// register SIGINT singl hanlder
 
@@ -104,6 +106,7 @@ int main() {
             }
             else {
                 argv[argCount++] = token;
+                argsCopy++;
             }
             token = strtok_r(NULL, " ", &saveptr);
         }
@@ -130,12 +133,18 @@ int main() {
             exit(0);
         }
 		else if(!strcmp(argv[0],"copy")){
+            if (argsCopy<4){
+                printf("\n copy [file1] [file2] -v  copy not  overwirte \n copy [file1] [file2] -f copy  overwirte\n");
+                continue;
+            }
             if(!strcmp(argv[3],"-v")){
                 copy_file(argv[1],argv[2],0,1);
+                continue;
             }
             if(!strcmp(argv[3],"-f")){
-                copy_file(argv[1],argv[2],1,1);
-            }
+                copy_file(argv[1],argv[2],1,0);
+                continue;
+            }  
             continue;
             
         }

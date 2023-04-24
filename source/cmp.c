@@ -46,7 +46,7 @@ int cmp_files(const char *file1, const char *file2, const char *flag) {
             break;
         }
     }
-    if (equal==1 && !strcmp(flag,"-v")) {
+    if (equal==1 && (!strcmp(flag,"-v") || !strcmp(flag,"-i")) ) {
         printf("equal\n");
     } else if  (!strcmp(flag,"-v")){
         printf("distinct\n");
