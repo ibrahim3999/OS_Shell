@@ -11,47 +11,13 @@
 #include "source/copy.h"
 #include "source/codecA.h"
 #include "source/codecB.h"
+#include "source/execute_command.h"
+#include "source/stopTool.h"
+
 #include <signal.h> //for signal handling
 #include <sys/wait.h>
+
 #define MAX_ARGS 10
-
-
-//signal handler function for SIGINT
-void handle_signal() {
-    printf("\nCtrl+C detected, quitting the shell.\n");
-    //exit(EXIT_SUCCESS);
-    
-}
-int execute_command(char *argv[], int input_fd, int output_fd) {
-    pid_t pid = fork();
-
-    if (pid == 0) {
-        // Child process
-
-        if (input_fd != STDIN_FILENO) {
-            dup2(input_fd, STDIN_FILENO);
-            close(input_fd);
-        }
-        if (output_fd != STDOUT_FILENO) {
-            dup2(output_fd, STDOUT_FILENO);
-            close(output_fd);
-        }
-
-        execvp(argv[0], argv);
-        perror("exec failed");
-        exit(EXIT_FAILURE);
-    }
-    else if (pid < 0) {
-        // Fork failed
-        perror("Fork failed");
-        return -1;
-    }
-    else {
-        // Parent process
-        wait(NULL);
-        return 0;
-    }
-}
 
 int main() {
 	char *argv[MAX_ARGS];
@@ -64,20 +30,19 @@ int main() {
     int input_fd = STDIN_FILENO;
     int output_fd = STDOUT_FILENO;
     int argsCopy=0;
-
     signal(SIGINT,handle_signal);// register SIGINT singl hanlder
-
 	while (1) {
+        printf("$:");
         argCount = 0;
         output = NULL;
         append = 0;
         input_fd = STDIN_FILENO;
         output_fd = STDOUT_FILENO;
-	    printf("$:");
+	   
 	    fgets(command, 1024, stdin);
 	    command[strlen(command) - 1] = '\0'; // replace \n with \0
       
-		
+	
 	    token = strtok_r(command," ",&saveptr);//split when space
 		
         while (token != NULL) {

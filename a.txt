@@ -1,1 +1,10 @@
-yaqoup
+a.txt
+basic_script.sh
+bin
+b.txt
+makefile
+objects
+README.md
+source
+stshell.c
+task2_v1.1.pdf

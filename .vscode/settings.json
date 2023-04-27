@@ -4,6 +4,7 @@
         "codeca.h": "c",
         "codecb.h": "c",
         "partb.h": "c",
-        "system_error": "c"
+        "system_error": "c",
+        "exucte": "cpp"
     }
 }
